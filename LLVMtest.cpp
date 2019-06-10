@@ -51,7 +51,12 @@ int main(int argc, char **argv) {
                        Function::ExternalLinkage, "main", TheModule.get());
   Builder.SetInsertPoint(BasicBlock::Create(TheContext, "", mainFunc));
 
-  Builder.CreateRet(Builder.getInt32(42));
+  Value *Vx = Builder.CreateAlloca(Builder.getInt32Ty(), nullptr, "x");
+  Value *Vy = Builder.CreateAlloca(Builder.getInt32Ty(), nullptr, "y");
+  Builder.CreateStore(Builder.getInt32(x), Vx);
+  Builder.CreateStore(Builder.CreateAdd(Builder.CreateLoad(Vx),Builder.CreateLoad(Vy)),Vy);
+
+  Builder.CreateRet(Builder.CreateAdd(Builder.CreateLoad(Vx),Builder.CreateLoad(Vy)));
 
   TheModule->dump();
 }
