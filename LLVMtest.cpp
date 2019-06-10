@@ -31,8 +31,27 @@ static std::map<std::string, Value *> NamedValues;
 int main(int argc, char **argv) {
   if (argc != 2)
 		std::cerr << "Insufficient arguments." << std::endl;
-  int x = atoi(&argv[1][0]);
+  double x = atoi(&argv[1][0]);
   char op = argv[1][1];
-  int y = atoi(&argv[1][2]);
+  double y = atoi(&argv[1][2]);
   std::cout << x << op << y << std::endl;
+
+  /*
+  Value* L = ConstantFP::get(TheContext,APFloat(x));
+  Value *R = ConstantFP::get(TheContext, APFloat(y));
+  Builder.CreateFAdd(L, R, "addtmp");
+
+  Function *CalleeF = TheModule->getFunction("main");
+  if (!CalleeF)
+		 std::cerr << "Unknown function referenced\n";
+*/
+  TheModule = llvm::make_unique<Module>("top", TheContext);
+  Function *mainFunc =
+      Function::Create(FunctionType::get(Type::getInt32Ty(TheContext), false),
+                       Function::ExternalLinkage, "main", TheModule.get());
+  Builder.SetInsertPoint(BasicBlock::Create(TheContext, "", mainFunc));
+
+  Builder.CreateRet(Builder.getInt32(42));
+
+  TheModule->dump();
 }
