@@ -26,6 +26,17 @@ static IRBuilder<> Builder(TheContext);
 static std::unique_ptr<Module> TheModule;
 static std::map<std::string, Value *> NamedValues;
 
+Value *digit(std::string name) {
+  return Builder.CreateAlloca(Builder.getInt32Ty(), nullptr, name);
+}
+//‚©‚¯‚´‚Ž
+void mul() {
+  Value *L = digit("test");
+  Value *R = digit("test2");
+}
+void expr() {
+	
+}
 
 
 int main(int argc, char **argv) {
@@ -36,15 +47,6 @@ int main(int argc, char **argv) {
   double y = atoi(&argv[1][2]);
   std::cout << x << op << y << std::endl;
 
-  /*
-  Value* L = ConstantFP::get(TheContext,APFloat(x));
-  Value *R = ConstantFP::get(TheContext, APFloat(y));
-  Builder.CreateFAdd(L, R, "addtmp");
-
-  Function *CalleeF = TheModule->getFunction("main");
-  if (!CalleeF)
-		 std::cerr << "Unknown function referenced\n";
-*/
   TheModule = llvm::make_unique<Module>("top", TheContext);
   Function *mainFunc =
       Function::Create(FunctionType::get(Type::getInt32Ty(TheContext), false),
